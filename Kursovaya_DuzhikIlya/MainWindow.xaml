@@ -1,0 +1,21 @@
+﻿<Window x:Class="Kursovaya_DuzhikIlya.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Kursovaya_DuzhikIlya"
+        mc:Ignorable="d"
+        Title="Система управления складом" Height="800" Width="1200"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <!-- Боковая панель навигации -->
+        <DockPanel LastChildFill="True">
+            <Menu DockPanel.Dock="Top" Background="#2196F3" Foreground="White" Height="40">
+                <MenuItem Header="Главная" Click="Home_Click" Height="40" Width="60"/>
+                <MenuItem Header="Выход" Click="Logout_Click" Height="40" Width="60"/>
+            </Menu>
+            <!-- Контент -->
+            <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
+        </DockPanel>
+    </Grid>
+</Window>

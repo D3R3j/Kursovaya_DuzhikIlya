@@ -1,51 +1,191 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
+using Kursovaya_DuzhikIlya; // Пространство имен для контекста базы данных
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using System.IO;
+using Microsoft.Win32;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Kursovaya_DuzhikIlya.pages
 {
-    /// <summary>
-    /// Логика взаимодействия для ReportsPage.xaml
-    /// </summary>
     public partial class ReportsPage : Page
     {
         public ReportsPage()
         {
             InitializeComponent();
+            LoadReportTypes();
         }
 
         private void LoadReportTypes()
         {
-            ReportTypeSelector.ItemsSource = new List<string> { "Ежедневный", "Еженедельный", "Ежемесячный" };
+            ReportTypes = new List<string> { "Движение товаров", "Инвентаризация" };
+            ReportTypeSelector.ItemsSource = ReportTypes;
         }
 
+        private List<string> ReportTypes { get; set; }
+        private List<object> ReportData { get; set; }
+
+        // Обработка нажатия кнопки "Сформировать отчет"
         private void GenerateReport_Click(object sender, RoutedEventArgs e)
         {
-            var startDate = StartDatePicker.SelectedDate ?? DateTime.Now.AddDays(-7);
-            var endDate = EndDatePicker.SelectedDate ?? DateTime.Now;
+            if (StartDatePicker.SelectedDate == null || EndDatePicker.SelectedDate == null || ReportTypeSelector.SelectedItem == null)
+            {
+                MessageBox.Show("Выберите все параметры отчета!");
+                return;
+            }
 
-            var reportData = Manager.Context.StockMovements
-                .Where(m => m.Date >= startDate && m.Date <= endDate)
-                .ToList();
+            var startDate = StartDatePicker.SelectedDate.Value;
+            var endDate = EndDatePicker.SelectedDate.Value;
+            var reportType = ReportTypeSelector.SelectedItem.ToString();
 
-            ReportGrid.ItemsSource = reportData;
+            try
+            {
+                using (var context = WarehouseEntities.GetContext())
+                {
+                    if (reportType == "Движение товаров")
+                    {
+                        var data = context.StockMovements
+                            .Where(sm => sm.Date >= startDate && sm.Date <= endDate)
+                            .ToList();
+                        ReportData = data.Cast<object>().ToList();
+                    }
+                    else if (reportType == "Инвентаризация")
+                    {
+                        var data = context.InventoryResults
+                            .Where(ir => ir.Inventory.StartDate >= startDate && ir.Inventory.EndDate <= endDate)
+                            .ToList();
+                        ReportData = data.Cast<object>().ToList();
+                    }
+
+                    ReportGrid.ItemsSource = ReportData;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка генерации отчета: {ex.Message}");
+            }
         }
 
+        // Обработка нажатия кнопки "Экспорт в PDF"
         private void ExportToPDF_Click(object sender, RoutedEventArgs e)
         {
-            // Реализация экспорта в PDF через iTextSharp
-            MessageBox.Show("Экспорт в PDF не реализован в этом примере.");
+            if (ReportData == null || !ReportData.Any())
+            {
+                MessageBox.Show("Нет данных для экспорта!");
+                return;
+            }
+
+            try
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog
+                {
+                    Filter = "PDF-файлы (*.pdf)|*.pdf",
+                    DefaultExt = ".pdf"
+                };
+
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    iTextSharp.text.Document document = new iTextSharp.text.Document();
+                    PdfWriter.GetInstance(document, new FileStream(saveFileDialog.FileName, FileMode.Create));
+                    document.Open();
+
+                    // Заголовок отчета
+                    iTextSharp.text.Paragraph title = new iTextSharp.text.Paragraph("Отчет по складским операциям\n\n");
+                    title.Alignment = iTextSharp.text.Element.ALIGN_CENTER;
+                    document.Add(title);
+
+                    // Таблица с данными
+                    PdfPTable table = new PdfPTable(ReportGrid.Columns.Count);
+                    foreach (var column in ReportGrid.Columns)
+                    {
+                        PdfPCell cell = new PdfPCell(new Phrase(column.Header.ToString()));
+                        table.AddCell(cell);
+                    }
+
+                    foreach (var item in ReportData)
+                    {
+                        foreach (var column in ReportGrid.Columns)
+                        {
+                            var cellContent = DataGridHelper.GetCellContent(ReportGrid, item, column);
+                            table.AddCell(cellContent);
+                        }
+                    }
+
+                    document.Add(table);
+                    document.Close();
+                    MessageBox.Show("Отчет успешно сохранен!");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка экспорта в PDF: {ex.Message}");
+            }
+        }
+    }
+
+    // Вспомогательный класс для получения содержимого ячеек DataGrid
+    public static class DataGridHelper
+    {
+        public static string GetCellContent(DataGrid grid, object item, DataGridColumn column)
+        {
+            var row = GetRow(grid, item);
+            if (row == null) return "";
+
+            var presenter = GetVisualChild<DataGridCellsPresenter>(row);
+            if (presenter == null) return "";
+
+            var cell = GetCell(grid, row, column);
+            if (cell != null)
+            {
+                return cell.Content?.ToString() ?? "";
+            }
+            return "";
+        }
+
+        private static DataGridRow GetRow(DataGrid grid, object item)
+        {
+            return grid.Items.Cast<object>()
+                .Where(i => i == item)
+                .Select(i => DataGridHelper.GetRow(grid, i))
+                .FirstOrDefault();
+        }
+
+        private static DataGridCell GetCell(DataGrid grid, DataGridRow row, DataGridColumn column)
+        {
+            if (row == null || column == null) return null;
+
+            int columnIndex = grid.Columns.IndexOf(column);
+            if (columnIndex == -1) return null;
+
+            var presenter = GetVisualChild<DataGridCellsPresenter>(row);
+            if (presenter == null) return null;
+
+            var item = presenter.Items[columnIndex];
+            if (item is DependencyObject depObj)
+            {
+                return GetVisualChild<DataGridCell>(depObj);
+            }
+            return null;
+        }
+
+        private static T GetVisualChild<T>(DependencyObject parent) where T : DependencyObject
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T result)
+                    return result;
+                var descendant = GetVisualChild<T>(child);
+                if (descendant != null)
+                    return descendant;
+            }
+            return null;
         }
     }
 }

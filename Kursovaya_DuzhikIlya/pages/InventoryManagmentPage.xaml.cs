@@ -1,106 +1,119 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Kursovaya_DuzhikIlya; // Пространство имен для контекста базы данных
 
 namespace Kursovaya_DuzhikIlya.pages
 {
-    /// <summary>
-    /// Логика взаимодействия для InventoryManagmentPage.xaml
-    /// </summary>
     public partial class InventoryManagmentPage : Page
     {
-        private WarehouseEntities _context;
-
         public InventoryManagmentPage()
         {
             InitializeComponent();
-            _context = WarehouseEntities.GetContext();
-            LoadInventoryActs();
+            LoadInventoryData();
         }
 
-        private void LoadInventoryActs()
+        // Список инвентаризаций
+        private List<Inventory> InventoryActs { get; set; }
+        private Inventory SelectedInventory => InventoryActsGrid.SelectedItem as Inventory;
+
+        // Загрузка данных
+        private void LoadInventoryData()
         {
             try
             {
-                // Перезагрузка данных из БД
-                _context.Inventories.Load();
-                InventoryActsGrid.ItemsSource = _context.Inventories.Local.ToBindingList();
+                using (var context = WarehouseEntities.GetContext())
+                {
+                    InventoryActs = context.Inventories
+                        .Include("User") // Загрузка связанных данных (ответственный)
+                        .ToList();
+
+                    InventoryActsGrid.ItemsSource = InventoryActs;
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка загрузки данных: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Ошибка загрузки данных: {ex.Message}");
             }
         }
 
-        // Создание нового акта инвентаризации
+        // Обработка нажатия кнопки "Создать акт"
         private void CreateAct_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                var newInventory = new Inventory
+                using (var context = WarehouseEntities.GetContext())
                 {
-                    StartDate = DateTime.Now,
-                    EmployeeID = GetCurrentUserID(), // Получение ID текущего пользователя
-                    Status = "Активная"
-                };
+                    // Создание нового акта инвентаризации
+                    var newInventory = new Inventory
+                    {
+                        StartDate = DateTime.Now,
+                        EmployeeID = GetCurrentUserID(), // Получение ID текущего пользователя
+                    };
 
-                _context.Inventories.Add(newInventory);
-                _context.SaveChanges();
+                    context.Inventories.Add(newInventory);
+                    context.SaveChanges();
 
-                LoadInventoryActs();
-                MessageBox.Show("Акт инвентаризации создан!", "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
+                    // Переход к странице деталей инвентаризации
+                    Manager.MainFrame.Navigate(new InventoryPage());
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка создания акта: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Ошибка создания акта: {ex.Message}");
             }
         }
 
-        // Удаление выбранного акта
+        // Обработка нажатия кнопки "Удалить акт"
         private void DeleteAct_Click(object sender, RoutedEventArgs e)
         {
-            try
+            var selected = SelectedInventory;
+            if (selected == null)
             {
-                var selectedAct = InventoryActsGrid.SelectedItem as Inventory;
-                if (selectedAct == null)
-                {
-                    MessageBox.Show("Выберите акт для удаления!", "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                // Подтверждение удаления
-                if (MessageBox.Show("Вы уверены, что хотите удалить этот акт инвентаризации?",
-                    "Подтверждение удаления", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                {
-                    _context.Inventories.Remove(selectedAct);
-                    _context.SaveChanges();
-                    LoadInventoryActs();
-                    MessageBox.Show("Акт удален!", "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
+                MessageBox.Show("Выберите акт для удаления!");
+                return;
             }
-            catch (Exception ex)
+
+            // Подтверждение удаления
+            if (MessageBox.Show($"Удалить акт от {selected.StartDate}?", "Подтверждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                MessageBox.Show($"Ошибка удаления акта: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                try
+                {
+                    using (var context = WarehouseEntities.GetContext())
+                    {
+                        var inventory = context.Inventories.Find(selected.InventoryID);
+                        if (inventory != null)
+                        {
+                            context.Inventories.Remove(inventory);
+                            context.SaveChanges();
+                        }
+                    }
+
+                    LoadInventoryData(); // Обновление списка
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка удаления: {ex.Message}");
+                }
             }
         }
 
         // Получение ID текущего пользователя (пример)
         private int GetCurrentUserID()
         {
-            // Реализуйте логику получения ID пользователя из сессии или авторизации
-            return 1; // Временное значение для тестирования
+            // Реализуйте получение текущего пользователя из сессии
+            return 1; // Пример: первый пользователь
+        }
+
+        // Обновление данных при изменении видимости страницы
+        private void InventoryManagmentPage_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (Visibility == Visibility.Visible)
+            {
+                LoadInventoryData();
+            }
         }
     }
 }

@@ -20,14 +20,14 @@ namespace Kursovaya_DuzhikIlya
             : base("name=WarehouseEntities")
         {
         }
-
+        
         public static WarehouseEntities GetContext()
         {
             if (_context == null)
                 _context = new WarehouseEntities();
             return _context;
         }
-    
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             throw new UnintentionalCodeFirstException();

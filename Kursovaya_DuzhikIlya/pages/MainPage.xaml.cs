@@ -1,23 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Kursovaya_DuzhikIlya.pages
 {
-    /// <summary>
-    /// Логика взаимодействия для MainPage.xaml
-    /// </summary>
     public partial class MainPage : Page
     {
         public MainPage()
@@ -25,19 +11,43 @@ namespace Kursovaya_DuzhikIlya.pages
             InitializeComponent();
         }
 
-        private void Reports_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
+        // Переход на страницу управления товарами
         private void ManageProducts_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                Manager.MainFrame.Navigate(new InventoryManagmentPage());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка навигации: {ex.Message}");
+            }
         }
 
+        // Переход на страницу инвентаризации
         private void Inventory_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                Manager.MainFrame.Navigate(new InventoryPage());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка навигации: {ex.Message}");
+            }
+        }
 
+        // Переход на страницу отчетов
+        private void Reports_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Manager.MainFrame.Navigate(new ReportsPage());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка навигации: {ex.Message}");
+            }
         }
     }
 }

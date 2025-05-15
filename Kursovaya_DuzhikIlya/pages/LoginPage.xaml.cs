@@ -1,76 +1,72 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Kursovaya_DuzhikIlya.pages; // Пространство имен для страниц
+using Kursovaya_DuzhikIlya; // Пространство имен для контекста базы данных
 
 namespace Kursovaya_DuzhikIlya.pages
 {
-    /// <summary>
-    /// Логика взаимодействия для LoginPage.xaml
-    /// </summary>
     public partial class LoginPage : Page
     {
         public LoginPage()
         {
             InitializeComponent();
         }
+
+        // Хэширование пароля с использованием SHA256
+        private string HashPassword(string password)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+            }
+        }
+
+        // Обработка нажатия кнопки "Войти"
         private void Login_Click(object sender, RoutedEventArgs e)
         {
             string login = LoginTextBox.Text;
             string password = PasswordTextBox.Password;
 
+            // Проверка ввода
             if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
             {
                 MessageBox.Show("Введите логин и пароль!");
                 return;
             }
 
-            var user = Manager.Context.Users
-                .FirstOrDefault(u => u.Login == login);
+            try
+            {
+                // Поиск пользователя в базе данных
+                var user = Manager.Context.Users
+                    .FirstOrDefault(u => u.Login == login);
 
-            if (user == null)
-            {
-                MessageBox.Show("Пользователь не найден!");
-                return;
+                // Проверка учетных данных
+                if (user != null && user.PasswordHash == HashPassword(password))
+                {
+                    // Переход на главную страницу
+                    Manager.MainFrame.Navigate(new MainPage());
+                }
+                else
+                {
+                    MessageBox.Show("Неверный логин или пароль!");
+                }
             }
-
-            // Сравнение хэша пароля (предполагается, что пароль хранится в виде хэша)
-            if (VerifyPassword(password, user.PasswordHash))
+            catch (Exception ex)
             {
-                MessageBox.Show("Авторизация успешна!");
-                Manager.MainFrame.Navigate(new MainPage());
-            }
-            else
-            {
-                MessageBox.Show("Неверный пароль!");
+                MessageBox.Show($"Ошибка подключения к базе данных: {ex.Message}");
             }
         }
 
+        // Обработка нажатия кнопки "Регистрация"
         private void Register_Click(object sender, RoutedEventArgs e)
         {
+            // Переход на страницу регистрации
             Manager.MainFrame.Navigate(new RegisterPage());
-        }
-
-        // Метод для проверки хэша пароля (реализуйте свой алгоритм)
-        private bool VerifyPassword(string enteredPassword, string storedHash)
-        {
-            // Пример: использование SHA256 для сравнения
-            using (var sha256 = SHA256.Create())
-            {
-                string hash = Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(enteredPassword)));
-                return hash == storedHash;
-            }
         }
     }
 }

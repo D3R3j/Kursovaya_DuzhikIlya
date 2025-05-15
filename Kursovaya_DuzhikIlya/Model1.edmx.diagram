@@ -4,18 +4,18 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="45200aae9f8342019e79bbf09302a8a4" Name="Diagram1">
+      <Diagram DiagramId="45200aae9f8342019e79bbf09302a8a4" Name="Diagram1" ZoomLevel="77" DisplayType="true">
         <EntityTypeShape EntityType="WarehouseModel.Category" Width="1.5" PointX="0.75" PointY="2.875" IsExpanded="true" />
         <EntityTypeShape EntityType="WarehouseModel.Document" Width="1.5" PointX="3" PointY="5.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="WarehouseModel.Inventory" Width="1.5" PointX="3" PointY="9.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="WarehouseModel.Inventory" Width="1.5" PointX="3.25" PointY="8.125" IsExpanded="true" />
         <EntityTypeShape EntityType="WarehouseModel.InventoryResult" Width="1.5" PointX="5.25" PointY="1.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="WarehouseModel.Product" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="WarehouseModel.Role" Width="1.5" PointX="1.5" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WarehouseModel.Product" Width="1.5" PointX="3" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="WarehouseModel.Role" Width="1.5" PointX="0.875" PointY="10.5" IsExpanded="true" />
         <EntityTypeShape EntityType="WarehouseModel.StockMovement" Width="1.5" PointX="5.25" PointY="5" IsExpanded="true" />
         <EntityTypeShape EntityType="WarehouseModel.Supplier" Width="1.5" PointX="0.75" PointY="5.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="WarehouseModel.sysdiagram" Width="1.5" PointX="7.75" PointY="2.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="WarehouseModel.User" Width="1.5" PointX="0.75" PointY="9.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="WarehouseModel.Warehouse" Width="1.5" PointX="3" PointY="15.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="WarehouseModel.sysdiagram" Width="1.5" PointX="14.5" PointY="3.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="WarehouseModel.User" Width="1.5" PointX="1" PointY="8.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="WarehouseModel.Warehouse" Width="1.5" PointX="7.625" PointY="5.375" IsExpanded="true" />
         <AssociationConnector Association="WarehouseModel.FK__Products__Catego__3A81B327" ManuallyRouted="false" />
         <AssociationConnector Association="WarehouseModel.FK__StockMove__Docum__5535A963" ManuallyRouted="false" />
         <AssociationConnector Association="WarehouseModel.FK_Documents_Suppliers" ManuallyRouted="false" />

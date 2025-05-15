@@ -25,17 +25,17 @@ namespace Kursovaya_DuzhikIlya
         {
             InitializeComponent();
             Manager.MainFrame = MainFrame;
-            MainFrame.Navigate(new LoginPage());
+            Manager.MainFrame.Navigate(new LoginPage());
         }
 
         private void Home_Click(object sender, RoutedEventArgs e)
         {
-            MainFrame.Navigate(new MainPage());
+            Manager.MainFrame.Navigate(new MainPage());
         }
 
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
-            MainFrame.Navigate(new LoginPage());
+            Manager.MainFrame.Navigate(new LoginPage());
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -11,6 +12,7 @@ using System.IO;
 using Microsoft.Win32;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+
 
 namespace Kursovaya_DuzhikIlya.pages
 {
@@ -46,21 +48,23 @@ namespace Kursovaya_DuzhikIlya.pages
 
             try
             {
-                // Используем существующий контекст из Manager
                 var context = Manager.Context;
 
                 if (reportType == "Движение товаров")
                 {
                     var data = context.StockMovements
+                        .Include("Product") // Загрузка связанного товара
+                        .Include("Warehouse") // Загрузка связанного склада
                         .Where(sm => sm.Date >= startDate && sm.Date <= endDate)
                         .ToList();
                     ReportData = data.Cast<object>().ToList();
                 }
                 else if (reportType == "Инвентаризация")
                 {
-                    // Явно загружаем связанный объект Inventory
                     var data = context.InventoryResults
-                        .Include("Inventory") // Подключаем связанный объект Inventory
+                        .Include("Inventory") // Загрузка связанной инвентаризации
+                        .Include("Product")   // Загрузка связанного товара
+                        .Include("Warehouse")  // Загрузка связанного склада
                         .Where(ir => ir.Inventory.StartDate >= startDate && ir.Inventory.EndDate <= endDate)
                         .ToList();
                     ReportData = data.Cast<object>().ToList();
@@ -97,25 +101,69 @@ namespace Kursovaya_DuzhikIlya.pages
                     PdfWriter.GetInstance(document, new FileStream(saveFileDialog.FileName, FileMode.Create));
                     document.Open();
 
+                    // Подключение шрифта с поддержкой кириллицы
+                    BaseFont baseFont = BaseFont.CreateFont("c:\\windows\\fonts\\arial.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+                    iTextSharp.text.Font font = new iTextSharp.text.Font(baseFont, 12);
+
                     // Заголовок отчета
-                    iTextSharp.text.Paragraph title = new iTextSharp.text.Paragraph("Отчет по складским операциям\n\n");
-                    title.Alignment = iTextSharp.text.Element.ALIGN_CENTER;
+                    Paragraph title = new Paragraph("Отчет по складским операциям\n\n", font);
+                    title.Alignment = Element.ALIGN_CENTER;
                     document.Add(title);
 
                     // Таблица с данными
                     PdfPTable table = new PdfPTable(ReportGrid.Columns.Count);
+
+                    // Добавляем заголовки
                     foreach (var column in ReportGrid.Columns)
                     {
-                        PdfPCell cell = new PdfPCell(new Phrase(column.Header.ToString()));
-                        table.AddCell(cell);
+                        PdfPCell headerCell = new PdfPCell(new Phrase(column.Header?.ToString(), font));
+                        table.AddCell(headerCell);
                     }
+
+                    // Получаем тип объектов
+                    Type itemType = null;
 
                     foreach (var item in ReportData)
                     {
+                        if (itemType == null && item != null)
+                        {
+                            itemType = item.GetType();
+                        }
+
                         foreach (var column in ReportGrid.Columns)
                         {
-                            var cellContent = DataGridHelper.GetCellContent(ReportGrid, item, column);
-                            table.AddCell(cellContent);
+                            if (column is DataGridTextColumn textColumn &&
+                                textColumn.Binding is Binding binding)
+                            {
+                                string path = binding.Path.Path;
+
+                                object value = null;
+                                if (path.Contains("."))
+                                {
+                                    // Обработка навигационных свойств (например: Product.Name)
+                                    string[] parts = path.Split('.');
+                                    object current = item;
+                                    foreach (string part in parts)
+                                    {
+                                        var prop = current?.GetType().GetProperty(part);
+                                        if (prop == null) break;
+                                        current = prop.GetValue(current);
+                                    }
+                                    value = current;
+                                }
+                                else
+                                {
+                                    var property = itemType.GetProperty(path);
+                                    value = property?.GetValue(item);
+                                }
+
+                                string displayValue = value?.ToString() ?? "";
+                                table.AddCell(new Phrase(displayValue, font));
+                            }
+                            else
+                            {
+                                table.AddCell("");
+                            }
                         }
                     }
 
@@ -148,20 +196,10 @@ namespace Kursovaya_DuzhikIlya.pages
 
         private static DataGridRow GetRow(DataGrid grid, object item)
         {
-            if (item == null) return null;
-
-            // Получаем индекс элемента в коллекции Items
             int index = grid.Items.IndexOf(item);
             if (index < 0) return null;
 
-            // Получаем строку через ItemContainerGenerator
-            var row = grid.Items[index] as DataGridRow;
-            if (row == null)
-            {
-                // Альтернативный поиск через визуальное дерево
-                row = GetVisualChild<DataGridRow>(grid);
-            }
-
+            var row = grid.ItemContainerGenerator.ContainerFromIndex(index) as DataGridRow;
             return row;
         }
 
@@ -170,15 +208,13 @@ namespace Kursovaya_DuzhikIlya.pages
             if (row == null || column == null) return null;
 
             int columnIndex = grid.Columns.IndexOf(column);
-            if (columnIndex < 0) return null;
+            if (columnIndex == -1) return null;
 
             var presenter = GetVisualChild<DataGridCellsPresenter>(row);
             if (presenter == null) return null;
 
-            var item = presenter.Items[columnIndex];
-            return item is DependencyObject depObj
-                ? GetVisualChild<DataGridCell>(depObj)
-                : null;
+            var item = presenter.ItemContainerGenerator.ContainerFromIndex(columnIndex);
+            return item as DataGridCell;
         }
 
         private static T GetVisualChild<T>(DependencyObject parent) where T : DependencyObject
@@ -186,7 +222,6 @@ namespace Kursovaya_DuzhikIlya.pages
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
             {
                 var child = VisualTreeHelper.GetChild(parent, i);
-
                 if (child is T result)
                     return result;
 

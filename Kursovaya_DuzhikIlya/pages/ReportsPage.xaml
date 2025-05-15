@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"  
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"  
       mc:Ignorable="d"  
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="520" d:DesignWidth="800"
       Title="Отчеты">
     <Grid Margin="20">
         <StackPanel>
@@ -29,13 +29,21 @@
               Width="200" 
               Click="GenerateReport_Click" 
               Margin="0,0,0,20"/>
+            <DataGrid x:Name="ReportGrid"
+          ItemsSource="{Binding ReportData}"
+          AutoGenerateColumns="False"
+          IsReadOnly="True"
+          Height="200">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Дата" Binding="{Binding Date}" />
+                    <DataGridTextColumn Header="Товар" Binding="{Binding Product.Name}" />
+                    <DataGridTextColumn Header="Склад" Binding="{Binding Warehouse.Name}" />
+                    <DataGridTextColumn Header="Количество" Binding="{Binding Quantity}" />
+                    <DataGridTextColumn Header="Документ" Binding="{Binding Document.Number}" />
+                </DataGrid.Columns>
+            </DataGrid>
 
             <!-- Таблица с данными отчета -->
-            <DataGrid x:Name="ReportGrid" 
-                ItemsSource="{Binding ReportData}" 
-                AutoGenerateColumns="True" 
-                IsReadOnly="True" 
-                Height="200"/>
 
             <!-- Кнопка экспорта в PDF -->
             <Button Content="Экспорт в PDF" 

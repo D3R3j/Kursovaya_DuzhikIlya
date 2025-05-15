@@ -46,25 +46,27 @@ namespace Kursovaya_DuzhikIlya.pages
 
             try
             {
-                using (var context = WarehouseEntities.GetContext())
-                {
-                    if (reportType == "Движение товаров")
-                    {
-                        var data = context.StockMovements
-                            .Where(sm => sm.Date >= startDate && sm.Date <= endDate)
-                            .ToList();
-                        ReportData = data.Cast<object>().ToList();
-                    }
-                    else if (reportType == "Инвентаризация")
-                    {
-                        var data = context.InventoryResults
-                            .Where(ir => ir.Inventory.StartDate >= startDate && ir.Inventory.EndDate <= endDate)
-                            .ToList();
-                        ReportData = data.Cast<object>().ToList();
-                    }
+                // Используем существующий контекст из Manager
+                var context = Manager.Context;
 
-                    ReportGrid.ItemsSource = ReportData;
+                if (reportType == "Движение товаров")
+                {
+                    var data = context.StockMovements
+                        .Where(sm => sm.Date >= startDate && sm.Date <= endDate)
+                        .ToList();
+                    ReportData = data.Cast<object>().ToList();
                 }
+                else if (reportType == "Инвентаризация")
+                {
+                    // Явно загружаем связанный объект Inventory
+                    var data = context.InventoryResults
+                        .Include("Inventory") // Подключаем связанный объект Inventory
+                        .Where(ir => ir.Inventory.StartDate >= startDate && ir.Inventory.EndDate <= endDate)
+                        .ToList();
+                    ReportData = data.Cast<object>().ToList();
+                }
+
+                ReportGrid.ItemsSource = ReportData;
             }
             catch (Exception ex)
             {
@@ -141,19 +143,26 @@ namespace Kursovaya_DuzhikIlya.pages
             if (presenter == null) return "";
 
             var cell = GetCell(grid, row, column);
-            if (cell != null)
-            {
-                return cell.Content?.ToString() ?? "";
-            }
-            return "";
+            return cell?.Content?.ToString() ?? "";
         }
 
         private static DataGridRow GetRow(DataGrid grid, object item)
         {
-            return grid.Items.Cast<object>()
-                .Where(i => i == item)
-                .Select(i => DataGridHelper.GetRow(grid, i))
-                .FirstOrDefault();
+            if (item == null) return null;
+
+            // Получаем индекс элемента в коллекции Items
+            int index = grid.Items.IndexOf(item);
+            if (index < 0) return null;
+
+            // Получаем строку через ItemContainerGenerator
+            var row = grid.Items[index] as DataGridRow;
+            if (row == null)
+            {
+                // Альтернативный поиск через визуальное дерево
+                row = GetVisualChild<DataGridRow>(grid);
+            }
+
+            return row;
         }
 
         private static DataGridCell GetCell(DataGrid grid, DataGridRow row, DataGridColumn column)
@@ -161,17 +170,15 @@ namespace Kursovaya_DuzhikIlya.pages
             if (row == null || column == null) return null;
 
             int columnIndex = grid.Columns.IndexOf(column);
-            if (columnIndex == -1) return null;
+            if (columnIndex < 0) return null;
 
             var presenter = GetVisualChild<DataGridCellsPresenter>(row);
             if (presenter == null) return null;
 
             var item = presenter.Items[columnIndex];
-            if (item is DependencyObject depObj)
-            {
-                return GetVisualChild<DataGridCell>(depObj);
-            }
-            return null;
+            return item is DependencyObject depObj
+                ? GetVisualChild<DataGridCell>(depObj)
+                : null;
         }
 
         private static T GetVisualChild<T>(DependencyObject parent) where T : DependencyObject
@@ -179,12 +186,15 @@ namespace Kursovaya_DuzhikIlya.pages
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
             {
                 var child = VisualTreeHelper.GetChild(parent, i);
+
                 if (child is T result)
                     return result;
+
                 var descendant = GetVisualChild<T>(child);
                 if (descendant != null)
                     return descendant;
             }
+
             return null;
         }
     }

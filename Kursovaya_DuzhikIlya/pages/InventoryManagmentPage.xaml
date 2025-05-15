@@ -18,7 +18,7 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Дата начала" Binding="{Binding StartDate}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Дата окончания" Binding="{Binding EndDate}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Ответственный" Binding="{Binding EmployeeName}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Ответственный" Binding="{Binding User.Login}" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </DataGrid>
 

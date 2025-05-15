@@ -24,14 +24,11 @@ namespace Kursovaya_DuzhikIlya.pages
         {
             try
             {
-                using (var context = WarehouseEntities.GetContext())
-                {
-                    InventoryActs = context.Inventories
-                        .Include("User") // Загрузка связанных данных (ответственный)
-                        .ToList();
-
-                    InventoryActsGrid.ItemsSource = InventoryActs;
-                }
+                var context = Manager.Context; // Используем существующий контекст
+                InventoryActs = context.Inventories
+                    .Include("User") // Используем строку вместо лямбды
+                    .ToList();
+                InventoryActsGrid.ItemsSource = InventoryActs;
             }
             catch (Exception ex)
             {
@@ -44,21 +41,15 @@ namespace Kursovaya_DuzhikIlya.pages
         {
             try
             {
-                using (var context = WarehouseEntities.GetContext())
+                var context = Manager.Context; // Используйте существующий контекст
+                var newInventory = new Inventory
                 {
-                    // Создание нового акта инвентаризации
-                    var newInventory = new Inventory
-                    {
-                        StartDate = DateTime.Now,
-                        EmployeeID = GetCurrentUserID(), // Получение ID текущего пользователя
-                    };
-
-                    context.Inventories.Add(newInventory);
-                    context.SaveChanges();
-
-                    // Переход к странице деталей инвентаризации
-                    Manager.MainFrame.Navigate(new InventoryPage());
-                }
+                    StartDate = DateTime.Now,
+                    EmployeeID = GetCurrentUserID(),
+                };
+                context.Inventories.Add(newInventory);
+                context.SaveChanges();
+                Manager.MainFrame.Navigate(new InventoryPage());
             }
             catch (Exception ex)
             {
@@ -76,22 +67,21 @@ namespace Kursovaya_DuzhikIlya.pages
                 return;
             }
 
-            // Подтверждение удаления
             if (MessageBox.Show($"Удалить акт от {selected.StartDate}?", "Подтверждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
                 try
                 {
-                    using (var context = WarehouseEntities.GetContext())
+                    // Используем существующий контекст
+                    var context = Manager.Context;
+
+                    var inventory = context.Inventories.Find(selected.InventoryID);
+                    if (inventory != null)
                     {
-                        var inventory = context.Inventories.Find(selected.InventoryID);
-                        if (inventory != null)
-                        {
-                            context.Inventories.Remove(inventory);
-                            context.SaveChanges();
-                        }
+                        context.Inventories.Remove(inventory);
+                        context.SaveChanges();
                     }
 
-                    LoadInventoryData(); // Обновление списка
+                    LoadInventoryData(); // Обновляем список
                 }
                 catch (Exception ex)
                 {

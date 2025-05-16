@@ -7,6 +7,9 @@
         mc:Ignorable="d"
         Title="Система управления складом" Height="800" Width="1200"
         WindowStartupLocation="CenterScreen">
+    <Window.Background>
+        <ImageBrush ImageSource="\Resources\warehouse.jpg"/>
+    </Window.Background>
     <Grid>
         <!-- Боковая панель навигации -->
         <DockPanel LastChildFill="True">
@@ -16,8 +19,8 @@
             </Menu>
             <!-- Контент -->
             <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
-            
+
         </DockPanel>
     </Grid>
-    
+
 </Window>

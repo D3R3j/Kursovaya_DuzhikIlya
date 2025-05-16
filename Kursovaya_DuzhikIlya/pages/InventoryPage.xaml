@@ -6,44 +6,46 @@
       mc:Ignorable="d"  
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Инвентаризация">
-    <Grid Margin="20">
-        <StackPanel>
-            <TextBlock Text="Инвентаризация склада" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Border Background="#99FFFFFF" Height="450" Width="800" CornerRadius="20" BorderBrush="#2196F3" BorderThickness="5">
+            <StackPanel>
+                <TextBlock Text="Инвентаризация склада" FontSize="24" FontWeight="Bold" Margin="15,0,0,20"/>
 
-            <!-- Выбор склада -->
-            <ComboBox x:Name="WarehouseSelector" 
-                ItemsSource="{Binding Warehouses}" 
-                SelectedItem="{Binding SelectedWarehouse}"
-                DisplayMemberPath="Name"
-                Margin="0,0,0,10"
-                SelectionChanged="WarehouseSelector_SelectionChanged"/>
+                <!-- Выбор склада -->
+                <ComboBox x:Name="WarehouseSelector" 
+        ItemsSource="{Binding Warehouses}" 
+        SelectedItem="{Binding SelectedWarehouse}"
+        DisplayMemberPath="Name"
+        Margin="0,0,0,10"
+        SelectionChanged="WarehouseSelector_SelectionChanged"/>
 
-            <!-- Таблица с товарами -->
-            <DataGrid x:Name="InventoryGrid" 
-                AutoGenerateColumns="False" 
-                CanUserAddRows="False" 
-                ItemsSource="{Binding InventoryItems}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Товар" Binding="{Binding ProductName}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Категория" Binding="{Binding Category}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Учетное количество" Binding="{Binding SystemQuantity}" IsReadOnly="True"/>
-                    <DataGridTemplateColumn Header="Фактическое количество">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding ActualQuantity, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
+                <!-- Таблица с товарами -->
+                <DataGrid x:Name="InventoryGrid" 
+        AutoGenerateColumns="False" 
+        CanUserAddRows="False" 
+        ItemsSource="{Binding InventoryItems}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Товар" Binding="{Binding ProductName}" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Категория" Binding="{Binding Category}" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Учетное количество" Binding="{Binding SystemQuantity}" IsReadOnly="True"/>
+                        <DataGridTemplateColumn Header="Фактическое количество">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBox Text="{Binding ActualQuantity, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
 
-            <!-- Кнопка сохранения -->
-            <Button Content="Сохранить изменения" 
-              Background="#2196F3" 
-              Foreground="White" 
-              Width="200" 
-              Margin="0,20,0,0" 
-              Click="SaveInventory_Click"/>
-        </StackPanel>
+                <!-- Кнопка сохранения -->
+                <Button Content="Сохранить изменения" 
+      Background="#2196F3" 
+      Foreground="White" 
+      Width="200" 
+      Margin="0,20,0,0" 
+      Click="SaveInventory_Click"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Page>

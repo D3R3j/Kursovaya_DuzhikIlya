@@ -7,16 +7,16 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Вход">
     <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Border Background="White" Padding="20" CornerRadius="10" BorderBrush="#2196F3" BorderThickness="1">
+        <Border Background="#99FFFFFF" Padding="80" CornerRadius="20" BorderBrush="#2196F3" BorderThickness="5">
             <StackPanel Width="300">
                 <TextBlock Text="Вход в систему" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
                 <!-- Логин -->
-                <TextBlock Text="Логин" />
+                <TextBlock Text="Логин" FontWeight="Bold" />
                 <TextBox x:Name="LoginTextBox" Margin="0,0,0,10"/>
 
                 <!-- Пароль -->
-                <TextBlock Text="Пароль" />
+                <TextBlock Text="Пароль" FontWeight="Bold"/>
                 <PasswordBox x:Name="PasswordTextBox" Margin="0,0,0,20"/>
 
                 <!-- Кнопка входа -->

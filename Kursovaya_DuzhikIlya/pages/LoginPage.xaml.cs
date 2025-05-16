@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using Kursovaya_DuzhikIlya.pages; // Пространство имен для страниц
-using Kursovaya_DuzhikIlya; // Пространство имен для контекста базы данных
+using Kursovaya_DuzhikIlya;
 
 namespace Kursovaya_DuzhikIlya.pages
 {
@@ -50,9 +50,11 @@ namespace Kursovaya_DuzhikIlya.pages
                     if (mainWindow != null)
                     {
                         mainWindow.HomeMenuItem.Visibility = Visibility.Visible;
+                        mainWindow.BackMenuItem.Visibility = Visibility.Visible;
+
                     }
 
-                    Manager.MainFrame.Navigate(new pages.MainPage());
+                    Manager.MainFrame.Navigate(new MainPage());
                 }
                 else
                 {

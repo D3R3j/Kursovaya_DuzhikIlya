@@ -11,15 +11,15 @@
             <StackPanel HorizontalAlignment="Center">
                 <TextBlock Text="Основные функции" FontSize="24" FontWeight="Bold" Margin="0,0,0,30"/>
 
-                <!-- Кнопка управления товарами -->
-                <Button Content="Управление товарами" 
-              Width="200" Height="50" Margin="0,10" 
-              Click="ManageProducts_Click"/>
-
                 <!-- Кнопка инвентаризации -->
                 <Button Content="Инвентаризация" 
+                Width="200" Height="50" Margin="0,10" 
+                Click="Inventory_Click"/>
+
+                <!-- Кнопка управления товарами -->
+                <Button Content="Управление актами" 
               Width="200" Height="50" Margin="0,10" 
-              Click="Inventory_Click"/>
+              Click="ManageProducts_Click"/>
 
                 <!-- Кнопка генерации отчетов -->
                 <Button Content="Генерация отчетов" 

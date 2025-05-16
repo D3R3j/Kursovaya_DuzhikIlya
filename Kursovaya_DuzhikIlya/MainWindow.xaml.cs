@@ -21,16 +21,20 @@ namespace Kursovaya_DuzhikIlya
         public MainWindow()
         {
             InitializeComponent();
-            Manager.MainFrame = MainFrame;
 
+            Manager.MainFrame = MainFrame;
+            ImageMenu.Visibility = Visibility.Visible;
             // Скрываем кнопку "Главная", если пользователь не залогинен
             if (Manager.CurrentUser == null)
             {
-                HomeMenuItem.Visibility = Visibility.Collapsed;
+                HomeMenuItem.Visibility = Visibility.Hidden;
+                BackMenuItem.Visibility = Visibility.Hidden;
+
             }
             else
             {
                 HomeMenuItem.Visibility = Visibility.Visible;
+                BackMenuItem.Visibility = Visibility.Visible;
             }
 
             // Загружаем стартовую страницу
@@ -42,14 +46,39 @@ namespace Kursovaya_DuzhikIlya
             // Переход на главную страницу
             Manager.MainFrame.Navigate(new pages.MainPage());
         }
+        private void Back_Click(object sender, RoutedEventArgs e)
+        {
+
+            if (Manager.MainFrame.CanGoBack)
+            {
+                Manager.MainFrame.GoBack();
+
+                // Проверяем, не перешли ли мы на LoginPage
+                if (Manager.MainFrame.Content is pages.LoginPage)
+                {
+                    Manager.CurrentUser = null;
+
+                    // Скрываем пункты меню
+                    HomeMenuItem.Visibility = Visibility.Hidden;
+                    BackMenuItem.Visibility = Visibility.Hidden;
+                }
+            }
+
+        }
 
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
-            // Очистка текущего пользователя
-            Manager.CurrentUser = null;
-
-            // Закрываем приложение
-            Application.Current.Shutdown();
+            if (!(Manager.MainFrame.Content is pages.LoginPage))
+            {
+                Manager.CurrentUser = null;
+                HomeMenuItem.Visibility = Visibility.Hidden;
+                BackMenuItem.Visibility = Visibility.Hidden;
+                Manager.MainFrame.Navigate(new pages.LoginPage());
+            }
+            else
+            {
+                Application.Current.Shutdown();
+            }
         }
     }
 }

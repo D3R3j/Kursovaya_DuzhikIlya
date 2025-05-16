@@ -13,17 +13,17 @@
 
                 <!-- Выбор склада -->
                 <ComboBox x:Name="WarehouseSelector" 
-        ItemsSource="{Binding Warehouses}" 
-        SelectedItem="{Binding SelectedWarehouse}"
-        DisplayMemberPath="Name"
-        Margin="0,0,0,10"
-        SelectionChanged="WarehouseSelector_SelectionChanged"/>
+                ItemsSource="{Binding Warehouses}" 
+                SelectedItem="{Binding SelectedWarehouse}"
+                DisplayMemberPath="Name"
+                Margin="0,0,0,10"
+                SelectionChanged="WarehouseSelector_SelectionChanged"/>
 
                 <!-- Таблица с товарами -->
                 <DataGrid x:Name="InventoryGrid" 
-        AutoGenerateColumns="False" 
-        CanUserAddRows="False" 
-        ItemsSource="{Binding InventoryItems}">
+                    AutoGenerateColumns="False" 
+                    CanUserAddRows="False" 
+                    ItemsSource="{Binding InventoryItems}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Товар" Binding="{Binding ProductName}" IsReadOnly="True"/>
                         <DataGridTextColumn Header="Категория" Binding="{Binding Category}" IsReadOnly="True"/>
@@ -40,11 +40,18 @@
 
                 <!-- Кнопка сохранения -->
                 <Button Content="Сохранить изменения" 
-      Background="#2196F3" 
-      Foreground="White" 
-      Width="200" 
-      Margin="0,20,0,0" 
-      Click="SaveInventory_Click"/>
+                Background="#2196F3" 
+                Foreground="White" 
+                Width="200" Height="30"
+                Margin="-220,40,0,0" 
+                Click="SaveInventory_Click"/>
+                
+                <Button Content="Добавить товар"  
+                Background="#FF9800"  
+                Foreground="White"  
+                Width="200"  Height="30"
+                Margin="220,-30,0,0"
+                Click="AddProduct_Click"/>
             </StackPanel>
         </Border>
     </Grid>

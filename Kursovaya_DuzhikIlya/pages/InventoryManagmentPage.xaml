@@ -15,7 +15,7 @@
 				<DataGrid x:Name="InventoryActsGrid"
 					AutoGenerateColumns="False"
 					ItemsSource="{Binding InventoryActs}"
-					SelectedItem="{Binding SelectedInventory}">
+					SelectedItem="{Binding SelectedInventory}" Width="700">
 					<DataGrid.Columns>
 						<DataGridTextColumn Header="Дата начала" Binding="{Binding StartDate}" IsReadOnly="True"/>
 						<DataGridTextColumn Header="Дата окончания" Binding="{Binding EndDate}" IsReadOnly="True"/>
@@ -28,15 +28,23 @@
 					<Button Content="Создать акт"
 					Background="#2196F3"
 					Foreground="White"
-					Width="150"
-					Margin="0,0,10,0"
+					Width="200" Height="30"
+					Margin="100,0,10,0"
 					Click="CreateAct_Click"/>
-					<Button Content="Удалить акт"
+
+                    <Button Content="Закрыть акт"
+					Background="#FF9800"
+					Foreground="White"
+					Width="200" Margin="0,0,10,0"
+					Click="CloseAct_Click"/>
+
+                    <Button Content="Удалить акт"
 					Background="#F44336"
 					Foreground="White"
-					Width="150"
-					Click="DeleteAct_Click"/>
-				</StackPanel>
+					Width="200"
+					Click="DeleteAct_Click" Height="30"/>
+                    
+                </StackPanel>
 			</StackPanel>
 		</Border>
 	</Grid>

@@ -57,6 +57,42 @@ namespace Kursovaya_DuzhikIlya.pages
             }
         }
 
+        private void CloseAct_Click(object sender, RoutedEventArgs e)
+        {
+            var selected = SelectedInventory;
+            if (selected == null)
+            {
+                MessageBox.Show("Выберите акт для закрытия!");
+                return;
+            }
+
+            try
+            {
+                var context = Manager.Context;
+
+                // Находим запись в базе по ID
+                var inventory = context.Inventories.Find(selected.InventoryID);
+                if (inventory == null)
+                {
+                    MessageBox.Show("Акт не найден в базе данных.");
+                    return;
+                }
+
+                // Устанавливаем дату окончания
+                inventory.EndDate = DateTime.Now;
+
+                context.SaveChanges();
+                MessageBox.Show("Акт успешно закрыт!");
+
+                // Обновляем список
+                LoadInventoryData();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при закрытии акта: {ex.Message}");
+            }
+        }
+
         // Обработка нажатия кнопки "Удалить акт"
         private void DeleteAct_Click(object sender, RoutedEventArgs e)
         {
@@ -89,6 +125,8 @@ namespace Kursovaya_DuzhikIlya.pages
                 }
             }
         }
+
+        
 
         // Получение ID текущего пользователя (пример)
         private int GetCurrentUserID()

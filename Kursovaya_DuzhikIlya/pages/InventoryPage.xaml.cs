@@ -49,7 +49,7 @@ namespace Kursovaya_DuzhikIlya.pages
                         ProductName = ir.Product.Name,
                         Category = ir.Product.Category.Name,
                         SystemQuantity = ir.Product.StockMovements
-                            .Sum(sm => sm.MovementType == "Приход" ? sm.Quantity : -sm.Quantity),
+                            .Sum(sm => sm.MovementType == "Поступление" ? sm.Quantity : -sm.Quantity),
                         ActualQuantity = ir.ActualQuantity,
                         InventoryResultId = ir.ResultID
                     }).ToList();
@@ -90,6 +90,11 @@ namespace Kursovaya_DuzhikIlya.pages
             {
                 MessageBox.Show($"Ошибка сохранения данных: {ex.Message}");
             }
+        }
+
+        private void AddProduct_Click(object sender, RoutedEventArgs e)
+        {
+            Manager.MainFrame.Navigate(new AddProductPage());
         }
 
         private void InventoryPage_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)

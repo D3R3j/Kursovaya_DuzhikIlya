@@ -6,23 +6,32 @@
         xmlns:local="clr-namespace:Kursovaya_DuzhikIlya"
         mc:Ignorable="d"
         Title="Система управления складом" Height="800" Width="1200"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen" Icon="\Resources\icon.ico">
     <Window.Background>
         <ImageBrush ImageSource="\Resources\warehouse.jpg"/>
     </Window.Background>
     <Grid>
         <DockPanel LastChildFill="True">
-            <Menu DockPanel.Dock="Top" Background="#2196F3" Foreground="White" Height="40">
-                <!-- Добавлено x:Name для управления видимостью -->
-                <MenuItem x:Name="HomeMenuItem" 
+            <Menu DockPanel.Dock="Top" Background="Transparent" Foreground="White" BorderBrush="Transparent" Height="150">
+                <Image x:Name="ImageMenu" Source="\Resources\logo.png" 
+                Width="150" 
+                Height="150" 
+                Stretch="UniformToFill"
+                VerticalAlignment="Center" 
+                Margin="-7,0,-7,0"/>
+                <MenuItem x:Name="HomeMenuItem" BorderBrush="White" Background="Blue"  BorderThickness="2"
                           Header="Главная" 
                           Click="Home_Click" 
                           Height="40" 
-                          Width="60"/>
-                <MenuItem Header="Выход" 
+                          Width="150" Margin="583,-110,0,0"/>
+                <MenuItem x:Name="BackMenuItem" Header="Назад" BorderBrush="White" Background="Blue" BorderThickness="2"
+                          Click="Back_Click" 
+                          Height="40" 
+                          Width="150" Margin="0,-110,0,0"/>
+                <MenuItem Header="Выход" BorderBrush="White" Background="Blue" BorderThickness="2"
                           Click="Logout_Click" 
                           Height="40" 
-                          Width="60"/>
+                          Width="150" Margin="0,-110,0,0"/>
             </Menu>
 
             <!-- Контент -->

@@ -32,7 +32,6 @@ namespace Kursovaya_DuzhikIlya.pages
             string login = LoginTextBox.Text;
             string password = PasswordTextBox.Password;
 
-            // Проверка ввода
             if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
             {
                 MessageBox.Show("Введите логин и пароль!");
@@ -41,15 +40,19 @@ namespace Kursovaya_DuzhikIlya.pages
 
             try
             {
-                // Поиск пользователя в базе данных
-                var user = Manager.Context.Users
-                    .FirstOrDefault(u => u.Login == login);
-
-                // Проверка учетных данных
+                var user = Manager.Context.Users.FirstOrDefault(u => u.Login == login);
                 if (user != null && user.PasswordHash == HashPassword(password))
                 {
-                    // Переход на главную страницу
-                    Manager.MainFrame.Navigate(new MainPage());
+                    Manager.CurrentUser = user;
+
+                    // Обновляем меню (перезапускаем главное окно или обновляем состояние)
+                    var mainWindow = Application.Current.MainWindow as MainWindow;
+                    if (mainWindow != null)
+                    {
+                        mainWindow.HomeMenuItem.Visibility = Visibility.Visible;
+                    }
+
+                    Manager.MainFrame.Navigate(new pages.MainPage());
                 }
                 else
                 {
@@ -58,7 +61,7 @@ namespace Kursovaya_DuzhikIlya.pages
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка подключения к базе данных: {ex.Message}");
+                MessageBox.Show($"Ошибка входа: {ex.Message}");
             }
         }
 

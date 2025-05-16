@@ -11,15 +11,22 @@
         <ImageBrush ImageSource="\Resources\warehouse.jpg"/>
     </Window.Background>
     <Grid>
-        <!-- Боковая панель навигации -->
         <DockPanel LastChildFill="True">
             <Menu DockPanel.Dock="Top" Background="#2196F3" Foreground="White" Height="40">
-                <MenuItem Header="Главная" Click="Home_Click" Height="40" Width="60"/>
-                <MenuItem Header="Выход" Click="Logout_Click" Height="40" Width="60"/>
+                <!-- Добавлено x:Name для управления видимостью -->
+                <MenuItem x:Name="HomeMenuItem" 
+                          Header="Главная" 
+                          Click="Home_Click" 
+                          Height="40" 
+                          Width="60"/>
+                <MenuItem Header="Выход" 
+                          Click="Logout_Click" 
+                          Height="40" 
+                          Width="60"/>
             </Menu>
+
             <!-- Контент -->
             <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
-
         </DockPanel>
     </Grid>
 

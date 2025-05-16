@@ -11,5 +11,7 @@ namespace Kursovaya_DuzhikIlya
     {
         public static Frame MainFrame { get; set; }
         public static WarehouseEntities Context { get; } = WarehouseEntities.GetContext();
+
+        public static User CurrentUser { get; set; }
     }
 }

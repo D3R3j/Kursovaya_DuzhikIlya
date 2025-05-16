@@ -16,26 +16,40 @@ using Kursovaya_DuzhikIlya.pages;
 
 namespace Kursovaya_DuzhikIlya
 {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
             Manager.MainFrame = MainFrame;
-            Manager.MainFrame.Navigate(new LoginPage());
+
+            // Скрываем кнопку "Главная", если пользователь не залогинен
+            if (Manager.CurrentUser == null)
+            {
+                HomeMenuItem.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                HomeMenuItem.Visibility = Visibility.Visible;
+            }
+
+            // Загружаем стартовую страницу
+            Manager.MainFrame.Navigate(new pages.LoginPage());
         }
 
         private void Home_Click(object sender, RoutedEventArgs e)
         {
-            Manager.MainFrame.Navigate(new MainPage());
+            // Переход на главную страницу
+            Manager.MainFrame.Navigate(new pages.MainPage());
         }
 
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
-            Manager.MainFrame.Navigate(new LoginPage());
+            // Очистка текущего пользователя
+            Manager.CurrentUser = null;
+
+            // Закрываем приложение
+            Application.Current.Shutdown();
         }
     }
 }

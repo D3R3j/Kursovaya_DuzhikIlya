@@ -8,7 +8,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Добавление товара">
     <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Border Background="#99FFFFFF" Height="450" Width="800" CornerRadius="20" BorderBrush="#2196F3" BorderThickness="5">
+        <Border Background="#99FFFFFF" Height="450" Width="800" CornerRadius="20" BorderBrush="#20273D" BorderThickness="5">
             <StackPanel Width="300">
                 <TextBlock Text="Добавить товар" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
 
@@ -54,7 +54,7 @@
 
                 <!-- Кнопка сохранения -->
                 <Button Content="Сохранить" 
-                    Background="#2196F3" 
+                    Background="#008B8B" 
                     Foreground="White" 
                     Click="SaveProduct_Click" 
                     Width="150"/>

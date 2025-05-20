@@ -15,6 +15,9 @@ namespace Kursovaya_DuzhikIlya.pages
             LoadWarehouses();
         }
 
+        public InventoryItemViewModel SelectedItem
+        => InventoryGrid.SelectedItem as InventoryItemViewModel;
+
         private void LoadWarehouses()
         {
             try
@@ -95,6 +98,47 @@ namespace Kursovaya_DuzhikIlya.pages
         private void AddProduct_Click(object sender, RoutedEventArgs e)
         {
             Manager.MainFrame.Navigate(new AddProductPage());
+        }
+
+        private void EditProduct_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedItem == null)
+            {
+                MessageBox.Show("Выберите товар для редактирования!");
+                return;
+            }
+
+            // Передаем ID для редактирования
+            Manager.MainFrame.Navigate(new EditProductPage(SelectedItem.InventoryResultId));
+        }
+
+        private void DeleteProduct_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedItem == null)
+            {
+                MessageBox.Show("Выберите товар для удаления!");
+                return;
+            }
+
+            var result = MessageBox.Show("Вы уверены, что хотите удалить этот товар?", "Подтверждение", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    var inventoryResult = Manager.Context.InventoryResults.Find(SelectedItem.InventoryResultId);
+                    if (inventoryResult != null)
+                    {
+                        Manager.Context.InventoryResults.Remove(inventoryResult);
+                        Manager.Context.SaveChanges();
+                        LoadInventoryData(); // Обновляем таблицу
+                        MessageBox.Show("Товар удален.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка удаления товара: {ex.Message}");
+                }
+            }
         }
 
         private void InventoryPage_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)

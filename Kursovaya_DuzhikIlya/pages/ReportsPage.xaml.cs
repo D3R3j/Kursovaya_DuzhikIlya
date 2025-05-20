@@ -59,17 +59,6 @@ namespace Kursovaya_DuzhikIlya.pages
                         .ToList();
                     ReportData = data.Cast<object>().ToList();
                 }
-                else if (reportType == "Инвентаризация")
-                {
-                    var data = context.InventoryResults
-                        .Include("Inventory") // Загрузка связанной инвентаризации
-                        .Include("Product")   // Загрузка связанного товара
-                        .Include("Warehouse")  // Загрузка связанного склада
-                        .Where(ir => ir.Inventory.StartDate >= startDate && ir.Inventory.EndDate <= endDate)
-                        .ToList();
-                    ReportData = data.Cast<object>().ToList();
-                }
-
                 ReportGrid.ItemsSource = ReportData;
             }
             catch (Exception ex)

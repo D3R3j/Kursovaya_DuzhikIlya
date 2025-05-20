@@ -19,16 +19,16 @@
                 Stretch="UniformToFill"
                 VerticalAlignment="Center" 
                 Margin="-7,0,-7,0"/>
-                <MenuItem x:Name="HomeMenuItem" BorderBrush="White" Background="Blue"  BorderThickness="2"
+                <MenuItem x:Name="HomeMenuItem" BorderBrush="White" Background="#20273D"  BorderThickness="2"
                           Header="Главная" 
                           Click="Home_Click" 
                           Height="40" 
                           Width="150" Margin="583,-110,0,0"/>
-                <MenuItem x:Name="BackMenuItem" Header="Назад" BorderBrush="White" Background="Blue" BorderThickness="2"
+                <MenuItem x:Name="BackMenuItem" Header="Назад" BorderBrush="White" Background="#20273D" BorderThickness="2"
                           Click="Back_Click" 
                           Height="40" 
                           Width="150" Margin="0,-110,0,0"/>
-                <MenuItem Header="Выход" BorderBrush="White" Background="Blue" BorderThickness="2"
+                <MenuItem Header="Выход" BorderBrush="White" Background="#20273D" BorderThickness="2"
                           Click="Logout_Click" 
                           Height="40" 
                           Width="150" Margin="0,-110,0,0"/>

@@ -7,7 +7,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Регистрация">
     <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Border Background="#99FFFFFF" Padding="20" CornerRadius="20" BorderBrush="#2196F3" BorderThickness="5">
+        <Border Background="#99FFFFFF" Padding="20" CornerRadius="20" BorderBrush="#20273D" BorderThickness="5">
             <StackPanel Width="300">
                 <TextBlock Text="Регистрация" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
@@ -24,7 +24,7 @@
                 <PasswordBox x:Name="ConfirmPasswordTextBox" Margin="0,0,0,20"/>
 
                 <!-- Кнопка регистрации -->
-                <Button Content="Зарегистрироваться" Background="#2196F3" Foreground="White" Click="Register_Click"/>
+                <Button Content="Зарегистрироваться" Background="#008B8B" Foreground="White" Click="Register_Click"/>
             </StackPanel>
         </Border>
     </Grid>

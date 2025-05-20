@@ -7,7 +7,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Управление инвентаризацией">
 	<Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Border Background="#99FFFFFF" Height="450" Width="800" CornerRadius="20" BorderBrush="#2196F3" BorderThickness="5">
+        <Border Background="#99FFFFFF" Height="450" Width="800" CornerRadius="20" BorderBrush="#20273D" BorderThickness="5">
 			<StackPanel>
 				<TextBlock Text="Управление актами инвентаризации" FontSize="24" FontWeight="Bold" Margin="15,0,0,20"/>
 
@@ -26,20 +26,20 @@
 				<!-- Кнопки управления -->
 				<StackPanel Orientation="Horizontal" Margin="0,20,0,0">
 					<Button Content="Создать акт"
-					Background="#2196F3"
+					Background="#008B8B"
 					Foreground="White"
 					Width="200" Height="30"
 					Margin="100,0,10,0"
 					Click="CreateAct_Click"/>
 
                     <Button Content="Закрыть акт"
-					Background="#FF9800"
+					Background="#D2691E"
 					Foreground="White"
 					Width="200" Margin="0,0,10,0"
 					Click="CloseAct_Click"/>
 
                     <Button Content="Удалить акт"
-					Background="#F44336"
+					Background="#8B0000"
 					Foreground="White"
 					Width="200"
 					Click="DeleteAct_Click" Height="30"/>

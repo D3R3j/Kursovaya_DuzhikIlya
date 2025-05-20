@@ -7,7 +7,7 @@
       d:DesignHeight="520" d:DesignWidth="800"
       Title="Отчеты">
     <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Border Background="#99FFFFFF" Width="800" Height="520" CornerRadius="20" BorderBrush="#2196F3" BorderThickness="5">
+        <Border Background="#99FFFFFF" Width="800" Height="520" CornerRadius="20" BorderBrush="#20273D" BorderThickness="5">
             <StackPanel>
                 <TextBlock Text="Генерация отчетов" FontSize="24" FontWeight="Bold" Margin="15,0,0,0"/>
 
@@ -25,7 +25,7 @@
 
                 <!-- Кнопка формирования отчета -->
                 <Button Content="Сформировать отчет" 
-              Background="#2196F3" 
+              Background="#008B8B" 
               Foreground="White" 
               Width="200" 
               Click="GenerateReport_Click" 
@@ -43,12 +43,9 @@
                         <DataGridTextColumn Header="Документ" Binding="{Binding Document.Number}" />
                     </DataGrid.Columns>
                 </DataGrid>
-
-                <!-- Таблица с данными отчета -->
-
                 <!-- Кнопка экспорта в PDF -->
                 <Button Content="Экспорт в PDF" 
-              Background="#4CAF50" 
+              Background="#6B8E23" 
               Foreground="White" 
               Width="200" 
               Click="ExportToPDF_Click"

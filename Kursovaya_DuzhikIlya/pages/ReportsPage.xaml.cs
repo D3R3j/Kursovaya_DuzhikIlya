@@ -89,29 +89,18 @@ namespace Kursovaya_DuzhikIlya.pages
                     iTextSharp.text.Document document = new iTextSharp.text.Document();
                     PdfWriter.GetInstance(document, new FileStream(saveFileDialog.FileName, FileMode.Create));
                     document.Open();
-
-                    // Подключение шрифта с поддержкой кириллицы
                     BaseFont baseFont = BaseFont.CreateFont("c:\\windows\\fonts\\arial.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
                     iTextSharp.text.Font font = new iTextSharp.text.Font(baseFont, 12);
-
-                    // Заголовок отчета
                     Paragraph title = new Paragraph("Отчет по складским операциям\n\n", font);
                     title.Alignment = Element.ALIGN_CENTER;
                     document.Add(title);
-
-                    // Таблица с данными
                     PdfPTable table = new PdfPTable(ReportGrid.Columns.Count);
-
-                    // Добавляем заголовки
                     foreach (var column in ReportGrid.Columns)
                     {
                         PdfPCell headerCell = new PdfPCell(new Phrase(column.Header?.ToString(), font));
                         table.AddCell(headerCell);
                     }
-
-                    // Получаем тип объектов
                     Type itemType = null;
-
                     foreach (var item in ReportData)
                     {
                         if (itemType == null && item != null)
@@ -155,7 +144,6 @@ namespace Kursovaya_DuzhikIlya.pages
                             }
                         }
                     }
-
                     document.Add(table);
                     document.Close();
                     MessageBox.Show("Отчет успешно сохранен!");

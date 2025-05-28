@@ -62,7 +62,7 @@ namespace Kursovaya_DuzhikIlya.pages
                 {
                     Login = login,
                     PasswordHash = HashPassword(password),
-                    RoleID = 2 // Роль по умолчанию (например, кладовщик)
+                    RoleID = 2 // Роль по умолчанию (Складской работник)
                 };
 
                 // Добавление пользователя в базу данных
